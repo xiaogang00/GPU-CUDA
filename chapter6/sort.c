@@ -110,3 +110,14 @@ u32 find_min(const u32 * const src_array, u32 * const list_indexes,
     list_indexes[min_idx]++;
     return min_val;
 }
+
+__global__ void gpu_sort_array_array(u32 * const data, const u32 num_lists, const u32 num_elements)
+{
+    const u32 tid = (blockIdx.x * blockDim.x) + threadIdx.x;
+    __shared__ u32 sort_tmp[NUM_ELEM];
+    __shared__ u32 sort_tmp_1[NUM_ELEM];
+    copy_data_to_shared(data, sort_tmp, numlists, num_elements, tid);
+    radix_sort2(sort_tmp, num_lists, num_elements, tid, sort_tmp_1);
+    merge_array6(sort_tmp, data, num_lists, num_elements, tid);
+}
+
