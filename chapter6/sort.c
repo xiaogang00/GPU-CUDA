@@ -71,3 +71,42 @@ __device__ void radix_sort(u32 * const sort_tmp, const u32 num_lists,
     }
     __syncthreads();
 }
+
+void merge_array(const * u32 const src_array,
+                 u32 * const data_array,
+                 const u32 num_lists,
+                 const u32 num_elements)
+{
+    const u32 num_elements_per_list = (num_elements / num_lists);
+    u32 list_indexes[MAX_NUM_LISTS];
+    for(u32 list = 0; list < num_lists; list++)
+    {
+        list_indexes[list] = 0;
+    }
+    for(u32 i = 0; i < num_elements; i++)
+    {
+        dest_array[i] = find_min(src_array, list_indexes, num_lists, num_elements_per_list);
+    }
+}
+
+u32 find_min(const u32 * const src_array, u32 * const list_indexes,
+             const u32 num_lists, const u32 num_elements_per_list)
+{
+    u32 min_val = 0xFFFFFFFF;
+    u32 min_idx = 0;
+    for(u32 i = 0 ; i < num_lists; i++)
+    {
+        if(list_indexes[i] < num_elements_per_list)
+        {
+            const u32 src_idx = i + (list_indexes[i] * num_lists);
+            const u32 data = src_array[src_idx];
+            if(data <= min_val)
+            {
+                min_val = data;
+                min_idx = i
+            }
+        }
+    }
+    list_indexes[min_idx]++;
+    return min_val;
+}
