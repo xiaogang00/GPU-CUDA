@@ -27,5 +27,9 @@ cudeError_t cudaGetDeviceCount(int * device_count);
 CUDA_CALL(cudaGetDeviceCount(&num_devices));
 ```
 
-单节点系统是唯一支持多GPU模型的系统，一个基于单CPU的任务将与单GPU上下文相关联。
+单节点系统是唯一支持多GPU模型的系统，一个基于单CPU的任务将与单GPU上下文相关联。后台的CUDA运行的时候将CPU进行/线程ID绑定到GPU上下文，其随后所有CUDA调用将绑定到该上下文的设备中分配内存。
+
+#### 流
+
+流是GPU上的虚拟工作队列。它们用于异步操作。也就是希望GPU独立于CPU进行操作。所有我们要考虑如何在多GPU上建立一系列的数据流和事件。
 
